@@ -1,0 +1,194 @@
+---
+title: "Collins College Retention and Enrollment"
+subtitle: "MSDM Group 3"
+author: "Ruben Garcia"
+institute: "IBM 6500, Cal Poly Pomona"
+date: "`r Sys.Date()`"
+format: 
+  revealjs:
+    theme: serif
+    width: 1600
+    height: 900
+    footer: Collins College Retention and Enrollment
+    transition: slide
+    transition-speed: default
+    incremental: false
+    toc: true
+    toc-depth: 1
+    slide-number: true
+    scrollable: true
+    smaller: true
+    code-fold: false
+    code-overflow: wrap
+    number-sections: false
+    number-depth: 5
+    embed-resources: true
+    css: styles.css
+editor: visual
+execute: 
+  echo: true
+  freeze: auto
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(knitr)
+```
+
+# Table of Contents
+
+1.  Introduction
+2.  Literature Review
+3.  Methods
+4.  References
+
+# Introduction
+
+## Problem Statement {.smaller}
+
+The Collins College of Hospitality Management (CCHM) at Cal Poly Pomona has real strengths: the PolyX teaching restaurant, wine, spirits and beer courses, a large alumni network, and the Hospitality Uncorked gala. Yet:
+
+- Enrollment fell from about **1,204** students (2015-16) to about **434** (2025-26).
+- Campus-wide enrollment stayed steady at about 28,000.
+- Many students are not involved in events outside class, which may hurt retention.
+- Communication channels do not consistently show what makes CCHM unique.
+
+::: callout-important
+## Two connected problems
+
+CCHM must **attract** new students and **engage and retain** current ones.
+:::
+
+## Enrollment Gap
+
+```{r}
+#| label: fig-enrollment
+#| echo: false
+#| fig-cap: "CCHM enrollment: past, present, and the Dean's goal"
+#| fig-alt: "Bar chart of CCHM enrollment in 2015-16, 2025-26, and the goal of 600"
+
+# Step 1: Create the data from the problem statement
+enrollment_data <- tibble(
+  period = c("2015-16", "2025-26", "Dean's goal"),
+  students = c(1204, 434, 600)
+)
+
+# Step 2: Set the order of the bars
+enrollment_data <- mutate(
+  .data = enrollment_data,
+  period = factor(period, levels = c("2015-16", "2025-26", "Dean's goal"))
+)
+
+# Step 3: Build the chart
+ggplot(data = enrollment_data, mapping = aes(x = period, y = students, fill = period)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  geom_text(mapping = aes(label = students), vjust = -0.5, size = 6) +
+  scale_fill_manual(values = c("grey60", "firebrick", "steelblue")) +
+  labs(x = NULL, y = "Students") +
+  theme_minimal(base_size = 18)
+```
+
+## Analytics Objective
+
+**AO1:** Measure engagement on Collins College Instagram **Reels and Stories** (views, saves, shares, follower growth) and compare it with student engagement, to see whether community-building content is linked to stronger **retention**.
+
+- Focus: the positive psychology of posts, such as purpose, community, clubs, and the student experience
+- Tied to **PO2** (retention) and **PO3** (awareness)
+
+## Importance
+
+- **PO1:** move enrollment toward the Dean's goal of about 600 students
+- **PO2:** raise engagement and sense of belonging, especially for first-time freshmen
+- **PO3:** raise prospective students' awareness of CCHM's unique programs
+- Social content that builds community could serve **all three** objectives at once
+
+::: notes
+Connect the chart to the objectives. The gap between 434 and 600 is the target.
+:::
+
+# Literature Review
+
+## Consumer Behavior Theory {.smaller}
+
+\[Pick the theories you actually read about. Candidates that fit a belonging and retention project:\]
+
+- **Sense of belonging:** students who feel connected to their college are more likely to persist
+- **Positive psychology:** purpose and community as drivers of engagement
+- **Student integration and retention models:** academic and social integration predict staying enrolled
+- **Social media engagement:** likes, saves, and shares as signs of connection (Bae, Park, and Kim, 2023)
+
+\[Add one sentence per theory on why it fits AO1.\]
+
+## Is the Data Adequate? {.smaller}
+
+**What we have**
+
+- Google Analytics 4 data
+- Collins College Instagram analytics (via Professor Kwok)
+- Event attendance
+- Planned interviews and focus groups
+
+**Gaps**
+
+- Correlation between post engagement and event attendance completed separetly
+- Long term retention and results may be unavailable as data will be finalized in the fall
+
+## Is More Analysis Needed?
+
+Yes. Quantitative metrics alone cannot explain **why** content works, so interviews add the reasons.
+
+- Focus groups with hospitality undergraduates
+- One-on-one interviews with CMAA leaders and alumni
+- Goal: find what builds belonging, and surface challenges in the program (Anthony et al., 2023)
+
+# Methods
+
+## Data and Sampling
+
+| Source                                    | Type         |
+|-------------------------------------------|--------------|
+| Google Analytics 4                        | Quantitative |
+| Collins College Instagram analytics       | Quantitative |
+| Event attendance                          | Quantitative |
+| Focus groups (hospitality undergraduates) | Qualitative  |
+| Interviews (CMAA leaders, alumni)         | Qualitative  |
+
+- IRB approval required for student interviews
+- Sampling Method will include 3 focus groups of 5 students each and a goal of 10 alumni interviews
+
+## Data Wrangling {.smaller}
+
+Initially before analysis; I will have to clean up the data and filter to specific parameters of specific social media posts and student attendance.
+
+- Clean and standardize Instagram and GA4 exports
+- Match the sources by date or time period
+- Handle missing values
+- Transcribe and code interview and focus group responses
+
+## Sample Characteristics
+
+Will include University underclassmen, specifically first year freshmen, seniors, and alumni of CPP Collins College
+
+## Measures
+
+- **Instagram:** views, saves, shares, follower growth (Reels and Stories)
+- **Student engagement:** event attendance
+- **Retention:** Enrollment Data for 2027
+- **Belonging:** themes from interviews and focus groups
+
+## Analytics Methods
+
+- **Quantitative:** compare engagement metrics with student engagement and retention
+- **Qualitative:** thematic analysis of interviews and focus groups
+- **Together:** do community-building Reels and Stories line up with stronger retention?
+
+# References
+
+## References {.smaller .scrollable}
+
+- Anthony et al. (2023). \[Add full citation\]
+- Bae, Park, and Kim (2023). \[Add full citation\]
+- Rodriguez, Gil, and Maupomé (2025). \[Add full citation\]
+- \[Add any theory sources you used in the literature review\]

@@ -1,0 +1,259 @@
+---
+title: "M06-Reflection Essay-Advanced Data Wrangling"
+author: "Ruben Garcia"
+date: today
+format: 
+  html: 
+    theme: cosmo
+    toc: true
+    toc-depth: 4
+    toc-expand: 2
+    number-sections: true
+    code-link: true
+    code-fold: true
+    code-tools: true
+    code-overflow: wrap
+    embed-resources: true
+editor: visual
+execute: 
+  freeze: auto
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(knitr)
+```
+
+# Introduction
+
+::: callout-note
+## About this report
+
+This report is what was reflection of the information in Module 6. It covers two topics: Revealjs presentations built with Quarto (Steps 1 and 2) and advanced data wrangling in R (Step 3).
+:::
+
+# Revealjs Presentations
+
+## Step 1: My Impression
+
+> **Prompt:** In Step 1, I learned how to design stunning presentation slides with Quarto. What's your impression of the Revealjs presentation? Describe its capabilities as you learned from the presentations. What are its strengths and weaknesses compared with PPT?
+
+Initially this allowed me to think about how easy it is to turn a quarto document into a presentation. Exploring the many options provided by the software; displaying notes and formatting become so much easier. Formatting longer phrases and report style wording allows both presenter and audience understand the main purposes.
+
+### Capabilities
+
+Revealjs slides are written in plain text inside a `.qmd` file, and Quarto turns them into an HTML slide deck. Based on the example presentations, the main capabilities include:
+
+- **Literate programming in slides:** R code, tables, and charts are generated when the deck is rendered, so they are reproducible.
+- **Layout tools:** columns, incremental lists, and speaker notes.
+- **Navigation and effects:** slide transitions, overview mode, and vertical slides.
+- **Themes:** built-in themes and custom CSS.
+- **Sharing:** the deck is a web page, so it can be published as a link (for example, on GitHub Pages.
+
+### Revealjs vs. PowerPoint
+
+::: panel-tabset
+## Strengths
+
+1.  Charts and tables update automatically when the data or code changes.
+2.  Slides are plain text, so they work well with version control.
+3.  One link works on any device, with no software to install.
+4.  Consistent styling comes from themes rather than slide-by-slide formatting.
+
+## Weaknesses
+
+1.  There is a learning curve for the syntax.
+2.  Free-form drag-and-drop design is harder than in PowerPoint.
+3.  Collaboration is harder, because many people are used to editing PPT files together.
+4.  Offline presenting needs a saved HTML file or a PDF export.
+:::
+
+## Step 2: My Published Presentation
+
+> **Prompt:** In Step 2, you were asked to create a Revealjs presentation. Provide a link to the presentation you published on the web. Add at least one reproducible chart or table in the presentation. Briefly describe what the presentation is about.
+
+### Link
+
+My presentation is published here:
+
+*What It Is About*
+
+My presentation is about Group 3's overall PO's and my personal AO1.
+
+### Reproducible Chart
+
+The chart in my presentation is produced by code, not pasted in as an image. Here is an example of that approach, using the built-in `mtcars` data:
+
+```{r}
+#| label: fig-mpg
+#| fig-cap: "Fuel efficiency by car weight (example of a reproducible chart)"
+#| fig-alt: "Scatterplot of miles per gallon against weight"
+ggplot(data = mtcars, mapping = aes(x = wt, y = mpg)) +
+  geom_point(size = 3, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "firebrick") +
+  labs(x = "Weight (1000 lbs)", y = "Miles per gallon") +
+  theme_minimal()
+```
+
+@fig-mpg shows the pattern. Because the chart is built from code, it updates itself whenever the data changes.
+
+## What I Learned
+
+> **Prompt:** What did you learn from the experience of the Revealjs presentation?
+
+\[Write 1-2 paragraphs about what you learned. Possible points: how to structure slides with headings, how code chunks work in slides, how to publish through GitHub Pages, and what went wrong and how you fixed it.\]
+
+::: callout-tip
+## Key takeaway
+
+\[One sentence summary of your biggest lesson.\]
+:::
+
+# Advanced Data Wrangling
+
+> **Prompt:** My advanced wrangling lecture in Step 3 introduced new concepts, including how to join relational databases. Pick three different functions, each from a different category. Describe when to use them and give one coding example along with an output for each function.
+
+I chose one function from each of three categories, summarized in @tbl-functions.
+
+```{r}
+#| label: tbl-functions
+#| tbl-cap: "The three functions I selected"
+tibble(
+  Category = c("Joining tables", "Reshaping data", "Recoding values"),
+  Function = c("left_join()", "pivot_longer()", "case_when()"),
+  Package = c("dplyr", "tidyr", "dplyr")
+) |>
+  kable()
+```
+
+## Joining Tables: `left_join()`
+
+### When to Use It
+
+Use `left_join()` when two tables share a key column and I want to keep every row of the first (left) table while adding matching information from the second table. Rows with no match get `NA`.[^1]
+
+[^1]: A relational database stores information in several tables linked by key columns, such as an ID.
+
+### Example
+
+Here, two small tables share the key `student_id`. Student 4 has no score yet, and student 6 is not in the student table.
+
+```{r}
+#| label: join-step1
+# Step 1: Create the students table
+students <- tibble(
+  student_id = c(1, 2, 3, 4),
+  name = c("Ana", "Ben", "Carla", "Diego")
+)
+
+# Step 2: Print the students table
+students
+```
+
+```{r}
+#| label: join-step2
+# Step 3: Create the scores table
+scores <- tibble(
+  student_id = c(1, 2, 3, 6),
+  score = c(88, 92, 79, 95)
+)
+
+# Step 4: Print the scores table
+scores
+```
+
+```{r}
+#| label: join-step3
+# Step 5: Join the scores onto the students table
+students_with_scores <- left_join(x = students, y = scores, by = "student_id")
+
+# Step 6: Print the result
+students_with_scores
+```
+
+::: callout-important
+## Reading the output
+
+Diego is kept but has `NA` for score, because he has no match in `scores`. Student 6 is dropped, because `left_join()` only keeps rows from the left table.
+:::
+
+## Reshaping Data: `pivot_longer()`
+
+### When to Use It
+
+Use `pivot_longer()` when data is "wide" (one column per time period or category) and I need it "long" (one row per observation). Long format is what `ggplot2` and many other tidyverse functions expect.
+
+### Example
+
+```{r}
+#| label: pivot-step1
+# Step 1: Create a wide table of quarterly sales
+sales_wide <- tibble(
+  store = c("North", "South"),
+  Q1 = c(100, 80),
+  Q2 = c(120, 90),
+  Q3 = c(110, 95)
+)
+
+# Step 2: Print the wide table
+sales_wide
+```
+
+```{r}
+#| label: pivot-step2
+# Step 3: Pivot the quarter columns into two columns
+sales_long <- pivot_longer(
+  data = sales_wide,
+  cols = c(Q1, Q2, Q3),
+  names_to = "quarter",
+  values_to = "sales"
+)
+
+# Step 4: Print the long table
+sales_long
+```
+
+The three quarter columns became two columns (`quarter` and `sales`), so each store now has three rows.
+
+## Recoding Values: `case_when()`
+
+### When to Use It
+
+Use `case_when()` inside `mutate()` when a new column depends on several conditions, such as turning numeric scores into letter grades. It is easier to read than many nested `ifelse()` calls.
+
+### Example
+
+```{r}
+#| label: casewhen-step1
+# Step 1: Start from the joined table and remove rows without a score
+scored_students <- filter(.data = students_with_scores, !is.na(score))
+
+# Step 2: Create a letter grade column
+graded_students <- mutate(
+  .data = scored_students,
+  grade = case_when(
+    score >= 90 ~ "A",
+    score >= 80 ~ "B",
+    score >= 70 ~ "C",
+    .default = "F"
+  )
+)
+
+# Step 3: Print the result
+graded_students
+```
+
+The conditions are checked from top to bottom, and the first one that is true sets the value. That is why the order matters.
+
+# Conclusion
+
+\[Write 3-5 sentences tying together what you learned about Revealjs and advanced wrangling, and how you might use both in future projects.\]
+
+# Appendix {.appendix}
+
+- Presentation link: \[your link\]
+- Packages used: `tidyverse`, `knitr`
